@@ -39,8 +39,9 @@ Class STB {
 	var $log_channel = "";
 	var $datum;
 	var $tmpdir = "/dev/shm";
+	var $tilebaseurl;
 
-	function __construct($stbdir, $startx, $starty, $sx, $sy, $datum='TWD67',$tmpdir="") {
+	function __construct($stbdir, $startx, $starty, $sx, $sy, $datum='TWD67',$tmpdir="",$tilebaseurl) {
 		if ($sx > 35 || $sy > 35) {
 			$this->err[] = "Sorry We Cannot create too big map";
 			return FALSE;
@@ -416,10 +417,11 @@ Class STB2 extends STB {
 	var $datum;
 	var $v3img; 
 	var $tmpdir = "/dev/shm";
+	var $tilebaseurl;
 
 	private $zoom = 16;
 
-	function __construct($basedir, $startx, $starty, $sx, $sy, $ph=0, $datum, $tmpdir="") {
+	function __construct($basedir, $startx, $starty, $sx, $sy, $ph=0, $datum, $tmpdir="",$tilebaseurl) {
 		if ($sx > 35 || $sy > 35) {
 			$this->err[] = "Sorry We Cannot create too big map";
 			return FALSE;
@@ -435,6 +437,7 @@ Class STB2 extends STB {
 		$this->shifty = $sy;
 		$this->ph = $ph;
 		$this->datum = $datum;
+		$this->tilebaseurl = $tilebaseurl;
 		if (!empty($tmpdir)) {
 			$this->tmpdir = $tmpdir;
 		}
@@ -539,15 +542,16 @@ Class STB2 extends STB {
 	switch($this->version){
 		case 3:
 			if ($this->include_gpx==0){
-				return 'http://make.happyman.idv.tw/map/tw25k2001/%s/%s/%s.png';
+				return $this->tilebaseurl . '/tw25k2001/%s/%s/%s.png';
 			} else 
-				return 'http://make.happyman.idv.tw/map/twmap_happyman_nocache/%s/%s/%s.png';
+				return $this->tilebaseurl . '/twmap_happyman_nocache/%s/%s/%s.png';
+				// /twmap_happyman_nocache/%s/%s/%s.png
 		break;
 		case 2016:
 			if ($this->include_gpx==0){
-				return 'http://make.happyman.idv.tw/map/moi_nocache/%s/%s/%s.png';
+				return $this->tilebaseurl . '/moi_nocache/%s/%s/%s.png';
 			} else 
-				return 'http://make.happyman.idv.tw/map/moi_happyman_nocache/%s/%s/%s.png';
+				return $this->tilebaseurl . '/moi_happyman_nocache/%s/%s/%s.png';
 		break;
 	}
 }
