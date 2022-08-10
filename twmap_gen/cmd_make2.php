@@ -6,7 +6,7 @@ require_once("config.inc.php");
 ini_set("memory_limit","512M");
 set_time_limit(0);
 
-$opt = getopt("O:r:v:t:i:p:g:Ges:dSl:c3m:");
+$opt = getopt("O:r:v:t:i:p:g:Ges:dSl:c3m:u:");
 if (!isset($opt['r']) || !isset($opt['O'])|| !isset($opt['t'])){
 	echo "Usage: $argv[0] -r 236:2514:6:4:TWD67 [-g gpx:0:0] [-c] [-G] -O dir [-e] -v 1|3|2016 -t title [-i localhost] [-m /tmp]\n";
 	echo "       -r params: startx:starty:shiftx:shifty:datum  datum:TWD67 or TWD97\n";
@@ -26,6 +26,7 @@ if (!isset($opt['r']) || !isset($opt['O'])|| !isset($opt['t'])){
 	echo "       -3 for A3 output\n";
 	echo "       -l channel:uniqid to notify web, email from web interface\n";
 	echo "       -m /tmp tmpdir\n";
+	echo "       -u url: custom map tile base path";
 	exit(1);
 }
 // parse param
@@ -65,6 +66,7 @@ if (isset($opt['m'])){
 } else {
 	$tmpdir = '/tmp';
 }
+$tilebaseurl = (isset($opt['u']))? $opt['u'] : "http://make.happyman.idv.tw/map";
 	
 $outfile_prefix=sprintf("%s/%dx%d-%dx%d-v%d%s_%s",$outpath,$startx*1000,$starty*1000,$shiftx,$shifty,$version,($ph==1)?"p":"",$datum);
 $outimage=$outfile_prefix . ".tag.png";
@@ -89,14 +91,14 @@ switch($version){
 	if ($ph == 1 ) {
 		cli_error_out("無澎湖圖資");
 	}
-	$g = new STB($stbpath, $startx, $starty, $shiftx, $shifty, $datum, $tmpdir);
+	$g = new STB($stbpath, $startx, $starty, $shiftx, $shifty, $datum, $tmpdir, $tilebaseurl);
 	break;
 	case 3:
-	$g = new STB2($stbpath, $startx, $starty, $shiftx, $shifty, $ph, $datum, $tmpdir);
+	$g = new STB2($stbpath, $startx, $starty, $shiftx, $shifty, $ph, $datum, $tmpdir, $tilebaseurl);
 	$g->version = 3;
 	break;
 	case 2016:
-	$g = new STB2($stbpath, $startx, $starty, $shiftx, $shifty, $ph, $datum, $tmpdir);
+	$g = new STB2($stbpath, $startx, $starty, $shiftx, $shifty, $ph, $datum, $tmpdir, $tilebaseurl);
 	$g->version = 2016;
 	break;
 }
